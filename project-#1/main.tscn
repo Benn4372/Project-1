@@ -7,6 +7,8 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bottom"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_left"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_right"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_goal"]
+size = Vector2(32, 32)
 
 [node name="Main" type="Node2D" unique_id=630661907]
 script = ExtResource("2_u3xr5")
@@ -32,3 +34,49 @@ shape = SubResource("RectangleShape2D_left")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
 shape = SubResource("RectangleShape2D_right")
+
+[node name="GoalBox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GoalBox"]
+shape = SubResource("RectangleShape2D_goal")
+
+[node name="Polygon2D" type="Polygon2D" parent="GoalBox"]
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+color = Color(0, 1, 0, 1)
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 160.0
+offset_bottom = 42.0
+text = "Score: 0"
+
+[node name="HighScoreLabel" type="Label" parent="CanvasLayer"]
+offset_left = 16.0
+offset_top = 48.0
+offset_right = 220.0
+offset_bottom = 74.0
+text = "High Score: 0"
+
+[node name="FlashOverlay" type="ColorRect" parent="CanvasLayer"]
+visible = false
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 2
+color = Color(0, 1, 0, 0.4)
+
+[node name="CloseButton" type="Button" parent="CanvasLayer"]
+offset_left = -88.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 52.0
+anchor_left = 1.0
+anchor_right = 1.0
+text = "Close"
+
+[node name="FlashTimer" type="Timer" parent="."]
+one_shot = true
