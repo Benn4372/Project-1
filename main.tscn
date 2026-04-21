@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://dw66x5na7qso8"]
+
+[ext_resource type="PackedScene" uid="uid://0uf4cdh65cyf" path="res://player.tscn" id="1_ig7tw"]
+[ext_resource type="Script" path="res://main.gd" id="2_u3xr5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_top"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bottom"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_left"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_right"]
+
+[node name="Main" type="Node2D" unique_id=630661907]
+script = ExtResource("2_u3xr5")
+
+[node name="Player" parent="." unique_id=2110897268 instance=ExtResource("1_ig7tw")]
+
+[node name="TopWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TopWall"]
+shape = SubResource("RectangleShape2D_top")
+
+[node name="BottomWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BottomWall"]
+shape = SubResource("RectangleShape2D_bottom")
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource("RectangleShape2D_left")
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource("RectangleShape2D_right")
