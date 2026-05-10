@@ -30,3 +30,4 @@ window/size/mode=3
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+environment/defaults/default_clear_color=Color(0.3, 0.3, 0.3, 1)

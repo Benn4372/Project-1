@@ -124,8 +124,14 @@ func _create_hazards() -> void:
 	for child in hazard_container.get_children():
 		child.queue_free()
 
-	for _index in range(HAZARD_COUNTS.get(GameState.current_difficulty, 10)):
+	for _index in range(_initial_red_count()):
 		_spawn_hazard(false)
+
+
+func _initial_red_count() -> int:
+	if GameState.current_difficulty == GameState.Difficulty.CUSTOM:
+		return maxi(0, int(GameState.custom_config["red_count"]))
+	return HAZARD_COUNTS.get(GameState.current_difficulty, 10)
 
 
 func _spawn_hazard(is_purple: bool) -> void:
@@ -194,18 +200,15 @@ func _move_purple_hazard(hazard: Area2D, delta: float) -> void:
 
 
 func _sync_adaptive_hazards(current_score: int) -> void:
-	if GameState.current_difficulty != GameState.Difficulty.ADAPTIVE:
+	var diff: int = GameState.current_difficulty
+	if diff != GameState.Difficulty.ADAPTIVE and diff != GameState.Difficulty.CUSTOM:
 		current_hazard_speed = HAZARD_SPEED
 		return
 
-	var target_reds: int = mini(5 + current_score / 2, ADAPTIVE_MAX_REDS)
-	var target_purples: int = clampi(
-		(current_score - ADAPTIVE_PURPLE_START_SCORE) / 5,
-		0,
-		ADAPTIVE_MAX_PURPLES
-	)
-	var speed_bonus: int = maxi(0, current_score - ADAPTIVE_SPEED_START_SCORE)
-	current_hazard_speed = HAZARD_SPEED + float(speed_bonus)
+	var composition: Dictionary = _target_composition(current_score)
+	var target_reds: int = composition["reds"]
+	var target_purples: int = composition["purples"]
+	current_hazard_speed = composition["speed"]
 
 	var reds: Array = []
 	var purples: Array = []
@@ -226,6 +229,57 @@ func _sync_adaptive_hazards(current_score: int) -> void:
 		_spawn_hazard(false)
 	for _i in range(target_purples - purples.size()):
 		_spawn_hazard(true)
+
+
+func _target_composition(current_score: int) -> Dictionary:
+	var diff: int = GameState.current_difficulty
+	if diff == GameState.Difficulty.ADAPTIVE:
+		var reds: int = mini(5 + current_score / 2, ADAPTIVE_MAX_REDS)
+		var purples: int = clampi(
+			(current_score - ADAPTIVE_PURPLE_START_SCORE) / 5,
+			0,
+			ADAPTIVE_MAX_PURPLES
+		)
+		var speed_bonus: float = float(maxi(0, current_score - ADAPTIVE_SPEED_START_SCORE))
+		return {"reds": reds, "purples": purples, "speed": HAZARD_SPEED + speed_bonus}
+
+	# CUSTOM
+	var c: Dictionary = GameState.custom_config
+	var base_reds: int = maxi(0, int(c["red_count"]))
+	var red_cap: int = maxi(base_reds, int(c["red_cap"]))
+	var red_interval: int = maxi(1, int(c["red_increment_interval"]))
+	var target_reds: int = base_reds
+	if bool(c["increase_reds"]):
+		target_reds = mini(base_reds + current_score / red_interval, red_cap)
+
+	var target_purples: int = 0
+	if bool(c["use_purples"]):
+		var purple_start: int = maxi(0, int(c["purple_start_score"]))
+		var purple_interval: int = maxi(1, int(c["purple_increment_interval"]))
+		var purple_cap: int = maxi(1, int(c["purple_cap"]))
+		if current_score >= purple_start:
+			target_purples = mini(
+				1 + (current_score - purple_start) / purple_interval,
+				purple_cap
+			)
+
+	var base_speed: float = maxf(1.0, float(c["hazard_speed"]))
+	if bool(c["speed_scaling"]):
+		var red_cap_score: int = 0
+		if bool(c["increase_reds"]):
+			red_cap_score = (red_cap - base_reds) * red_interval
+		var purple_cap_score: int = 0
+		if bool(c["use_purples"]):
+			purple_cap_score = (
+				maxi(0, int(c["purple_start_score"]))
+				+ (maxi(1, int(c["purple_cap"])) - 1)
+				* maxi(1, int(c["purple_increment_interval"]))
+			)
+		var scaling_start: int = maxi(red_cap_score, purple_cap_score)
+		if current_score > scaling_start:
+			base_speed += float(current_score - scaling_start)
+
+	return {"reds": target_reds, "purples": target_purples, "speed": base_speed}
 
 
 func _assign_hazard_direction(hazard: Area2D) -> void:

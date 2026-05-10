@@ -4,11 +4,13 @@ extends Control
 @onready var medium_button: Button = $CenterContainer/VBoxContainer/MediumRow/Button
 @onready var hard_button: Button = $CenterContainer/VBoxContainer/HardRow/Button
 @onready var adaptive_button: Button = $CenterContainer/VBoxContainer/AdaptiveRow/Button
+@onready var custom_button: Button = $CenterContainer/VBoxContainer/CustomRow/Button
 
 @onready var easy_high: Label = $CenterContainer/VBoxContainer/EasyRow/HighLabel
 @onready var medium_high: Label = $CenterContainer/VBoxContainer/MediumRow/HighLabel
 @onready var hard_high: Label = $CenterContainer/VBoxContainer/HardRow/HighLabel
 @onready var adaptive_high: Label = $CenterContainer/VBoxContainer/AdaptiveRow/HighLabel
+@onready var custom_high: Label = $CenterContainer/VBoxContainer/CustomRow/HighLabel
 
 
 func _ready() -> void:
@@ -16,6 +18,7 @@ func _ready() -> void:
 	medium_button.pressed.connect(_start_game.bind(GameState.Difficulty.MEDIUM))
 	hard_button.pressed.connect(_start_game.bind(GameState.Difficulty.HARD))
 	adaptive_button.pressed.connect(_start_game.bind(GameState.Difficulty.ADAPTIVE))
+	custom_button.pressed.connect(_open_custom_config)
 	_refresh_high_scores()
 
 
@@ -24,8 +27,13 @@ func _refresh_high_scores() -> void:
 	medium_high.text = "High: %d" % GameState.get_high_score(GameState.Difficulty.MEDIUM)
 	hard_high.text = "High: %d" % GameState.get_high_score(GameState.Difficulty.HARD)
 	adaptive_high.text = "High: %d" % GameState.get_high_score(GameState.Difficulty.ADAPTIVE)
+	custom_high.text = "High: %d" % GameState.get_high_score(GameState.Difficulty.CUSTOM)
 
 
 func _start_game(difficulty: int) -> void:
 	GameState.current_difficulty = difficulty
 	get_tree().change_scene_to_file("res://main.tscn")
+
+
+func _open_custom_config() -> void:
+	get_tree().change_scene_to_file("res://custom_config.tscn")

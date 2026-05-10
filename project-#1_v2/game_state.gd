@@ -2,7 +2,7 @@ extends Node
 
 # In-memory session state. Resets when the browser reloads.
 
-enum Difficulty { EASY, MEDIUM, HARD, ADAPTIVE }
+enum Difficulty { EASY, MEDIUM, HARD, ADAPTIVE, CUSTOM }
 
 var current_difficulty: int = Difficulty.EASY
 
@@ -11,6 +11,23 @@ var stats: Dictionary = {
 	Difficulty.MEDIUM: {"high_score": 0, "last_score": 0, "total_rounds": 0, "total_points": 0},
 	Difficulty.HARD: {"high_score": 0, "last_score": 0, "total_rounds": 0, "total_points": 0},
 	Difficulty.ADAPTIVE: {"high_score": 0, "last_score": 0, "total_rounds": 0, "total_points": 0},
+	Difficulty.CUSTOM: {"high_score": 0, "last_score": 0, "total_rounds": 0, "total_points": 0},
+}
+
+# Custom mode configuration — defaults match Medium difficulty.
+# Persists in-session so the config screen remembers prior values.
+var custom_config: Dictionary = {
+	"player_speed": 2000.0,
+	"hazard_speed": 150.0,
+	"red_count": 10,
+	"increase_reds": false,
+	"red_increment_interval": 2,
+	"red_cap": 15,
+	"use_purples": false,
+	"purple_start_score": 20,
+	"purple_increment_interval": 5,
+	"purple_cap": 5,
+	"speed_scaling": false,
 }
 
 
@@ -48,5 +65,7 @@ func difficulty_name(difficulty: int) -> String:
 			return "Hard"
 		Difficulty.ADAPTIVE:
 			return "Adaptive"
+		Difficulty.CUSTOM:
+			return "Custom"
 		_:
 			return "Unknown"
