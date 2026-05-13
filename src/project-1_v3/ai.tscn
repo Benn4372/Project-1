@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ai.gd" id="1_ai"]
+[ext_resource type="Texture2D" path="res://icon.svg" id="2_icon"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ai"]
+size = Vector2(96, 96)
+
+[node name="AI" type="CharacterBody2D"]
+modulate = Color(1, 0.7, 0.2, 1)
+script = ExtResource("1_ai")
+
+[node name="AICharacter" type="Sprite2D" parent="."]
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_icon")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ai")

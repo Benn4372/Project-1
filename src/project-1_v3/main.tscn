@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://dw66x5na7qso8"]
+
+[ext_resource type="PackedScene" uid="uid://0uf4cdh65cyf" path="res://player.tscn" id="1_ig7tw"]
+[ext_resource type="Script" path="res://main.gd" id="2_u3xr5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_top"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bottom"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_left"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_right"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_goal"]
+size = Vector2(32, 32)
+
+[node name="Main" type="Node2D" unique_id=630661907]
+script = ExtResource("2_u3xr5")
+
+[node name="Player" parent="." unique_id=2110897268 instance=ExtResource("1_ig7tw")]
+
+[node name="TopWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TopWall"]
+shape = SubResource("RectangleShape2D_top")
+
+[node name="BottomWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BottomWall"]
+shape = SubResource("RectangleShape2D_bottom")
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource("RectangleShape2D_left")
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource("RectangleShape2D_right")
+
+[node name="GoalBox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GoalBox"]
+shape = SubResource("RectangleShape2D_goal")
+
+[node name="Polygon2D" type="Polygon2D" parent="GoalBox"]
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+color = Color(0, 1, 0, 1)
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ScoresVBox" type="VBoxContainer" parent="CanvasLayer"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 240.0
+offset_bottom = 220.0
+theme_override_constants/separation = 6
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/ScoresVBox"]
+text = "Score: 0"
+
+[node name="P1Label" type="Label" parent="CanvasLayer/ScoresVBox"]
+visible = false
+text = "P1: 0"
+
+[node name="P2Label" type="Label" parent="CanvasLayer/ScoresVBox"]
+visible = false
+text = "P2: 0"
+
+[node name="HighScoreLabel" type="Label" parent="CanvasLayer/ScoresVBox"]
+text = "High Score: 0"
+
+[node name="LastScoreLabel" type="Label" parent="CanvasLayer/ScoresVBox"]
+text = "Last: 0"
+
+[node name="AverageScoreLabel" type="Label" parent="CanvasLayer/ScoresVBox"]
+text = "Avg: 0.0"
+
+[node name="FlashOverlay" type="ColorRect" parent="CanvasLayer"]
+visible = false
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 2
+color = Color(0, 1, 0, 0.4)
+
+[node name="CloseButton" type="Button" parent="CanvasLayer"]
+offset_left = -88.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 52.0
+anchor_left = 1.0
+anchor_right = 1.0
+text = "Menu"
+
+[node name="FlashTimer" type="Timer" parent="."]
+one_shot = true
